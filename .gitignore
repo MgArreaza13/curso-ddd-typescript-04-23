@@ -6,3 +6,4 @@ data
 test-results.xml
 .vscode/settings.json
 .env
+src/Contexts/Mooc/Courses/infrastructure/persistence/courses.*
