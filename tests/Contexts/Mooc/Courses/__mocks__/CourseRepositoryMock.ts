@@ -9,7 +9,7 @@ export class CourseRepositoryMock implements CourseRepository {
 	}
 
 
-  assertSaveHaveBeenCalledWith(expected: Course) {
+  assertSaveHaveBeenCalledWith(expected: Course): void {
     expect(this.mockSave).toHaveBeenCalledWith(expected)
   }
 
