@@ -1,9 +1,11 @@
+import * as dotenv from 'dotenv'
 import { Server } from './server';
 
 export class MoocBackendApp {
 	server?: Server;
 
 	async start(): Promise<void> {
+    dotenv.config()
 		const port = process.env.PORT ?? '5000';
 		this.server = new Server(port);
 
