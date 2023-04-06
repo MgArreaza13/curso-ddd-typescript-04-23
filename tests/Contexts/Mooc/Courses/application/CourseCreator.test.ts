@@ -20,6 +20,7 @@ describe('CourseCreator', () => {
 
 		await creator.run(id, name, duration);
 
+    repository.assertSaveHaveBeenCalledWith(course)
 		repository.assertLastSavedCourseIs(course);
 	});
 });
