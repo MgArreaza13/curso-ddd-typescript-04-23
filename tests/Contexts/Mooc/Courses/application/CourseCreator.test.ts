@@ -9,10 +9,12 @@ import { CreateCourseCommandMother } from './create/CreateCourseCommandMother';
 
 let repository: CourseRepositoryMock;
 let creator: CourseCreator;
+const errorMessage: string = "The Course Name <aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa> has more than 30 characters";
 
 beforeEach(() => {
   repository = new CourseRepositoryMock();
   creator = new CourseCreator(repository);
+  // TODO: Mejorar
 });
 
 describe('CourseCreator', () => {
@@ -35,7 +37,7 @@ describe('CourseCreator', () => {
 
   it('should throw error if course name length more than 30', async () => {
     const id = Uuid.random();
-    const name = 'some-name'.repeat(30);
+    const name = 'a'.repeat(30);
     const duration = 'some-duration';
 
     expect(async () => {
@@ -50,7 +52,8 @@ describe('CourseCreator', () => {
       repository.assertSaveHaveBeenCalledWith(course);
       repository.assertLastSavedCourseIs(course);
     }).rejects.toThrow(
-      'The Course Name <some-namesome-namesome-namesome-namesome-namesome-namesome-namesome-namesome-namesome-namesome-namesome-namesome-namesome-namesome-namesome-namesome-namesome-namesome-namesome-namesome-namesome-namesome-namesome-namesome-namesome-namesome-namesome-namesome-namesome-name> has more than 30 characters'
+      // CourseNameLengthExceeded
+      errorMessage
     );
   });
 
@@ -63,5 +66,21 @@ describe('CourseCreator', () => {
 
     repository.assertSaveHaveBeenCalledWith(course);
     repository.assertLastSavedCourseIs(course);
+  });
+
+  it('should throw error if course name length more than 30 with CreateCourseRequestMother', async () => {
+    expect(async () => {
+      const request = CreateCourseCommandMother.invalid()
+
+      const course = CourseMother.from(request)
+
+      await creator.run(request);
+
+      repository.assertSaveHaveBeenCalledWith(course);
+      repository.assertLastSavedCourseIs(course);
+    }).rejects.toThrow(
+      // CourseNameLengthExceeded
+      errorMessage
+    );
   });
 });
