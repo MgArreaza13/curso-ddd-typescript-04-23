@@ -1,10 +1,11 @@
 import { Course } from "../../../../../../src/Contexts/Mooc/Courses/domain/Course"
 import { FileCourseRepository } from "../../../../../../src/Contexts/Mooc/Courses/infrastructure/persistence/FileCourseRepository"
+import { Uuid } from "../../../../../../src/Contexts/Shared/domain/value-object/Uuid"
 
 describe('FileCourseRepository', () => {
   it('should save a course', async () => {
     const _course: Course = {
-      id: "id",
+      id: new Uuid("62a3ae0c-897d-4360-9cbb-94ba9c847978"),
       name: "name",
       duration: "duracion"
     }
@@ -13,7 +14,7 @@ describe('FileCourseRepository', () => {
 
     await repository.save(course);
 
-    const expectedCourse = await repository.search("id");
+    const expectedCourse = await repository.search(course.id);
     expect(course).toEqual(expectedCourse)
   })
 })

@@ -2,27 +2,24 @@ import { CourseRepository } from '../../domain/CourseRepository';
 import { Course } from '../../domain/Course';
 import fs from 'fs';
 import BSON from 'bson';
-
+import { Nullable } from '../../../../Shared/domain/Nullable';
+import { CourseId } from '../../../Shared/domain/Courses/CourseId';
 
 export class FileCourseRepository implements CourseRepository {
   private FILE_PATH = `${__dirname}/courses`;
 
   async save(course: Course): Promise<void> {
-    const filePath = this.filePath(course.id);
+    const filePath = this.filePath(course.id.value);
     const data = BSON.serialize(course);
 
     return fs.writeFileSync(filePath, data);
   }
 
-  async search(courseId: string): Promise<Course> {
-    const courseData = await fs.promises.readFile(this.filePath(courseId))
-    const { id, name, duration } = BSON.deserialize(courseData);
-    const _course: Course = {
-      id,
-      name,
-      duration
-    }
-    return new Course(_course)
+  async search(id: CourseId): Promise<Nullable<Course>> {
+    const filePath = this.filePath(id.value);
+    const exists = fs.existsSync(filePath);
+
+    return exists ? BSON.deserialize(fs.readFileSync(this.filePath(id.value))) as Course : null;
   }
 
   private filePath(id: string): string {
